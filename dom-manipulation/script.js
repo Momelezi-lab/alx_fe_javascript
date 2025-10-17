@@ -18,8 +18,7 @@ const DEFAULT_QUOTES = [
 let quotes = [];
 
 // DOM elements
-const quoteTextEl = document.getElementById("quote-text");
-const quoteCategoryEl = document.getElementById("quote-category");
+const quoteDisplayEl = document.getElementById("quoteDisplay");
 const legacyShowQuoteBtn = document.getElementById("newQuote"); // autograder button
 const addQuoteForm = document.getElementById("add-quote-form");
 const newQuoteTextEl = document.getElementById("new-quote-text");
@@ -61,23 +60,20 @@ function loadQuotesFromLocalStorage() {
 // ----------------
 function displayRandomQuote() {
   if (!Array.isArray(quotes) || quotes.length === 0) {
-    quoteTextEl.textContent = "No quotes available.";
-    quoteCategoryEl.textContent = "";
+    quoteDisplayEl.textContent = "No quotes available.";
     return;
   }
 
   const filtered = getFilteredQuotes();
   if (filtered.length === 0) {
-    quoteTextEl.textContent = "No quotes available in this category.";
-    quoteCategoryEl.textContent = "";
+    quoteDisplayEl.textContent = "No quotes available in this category.";
     return;
   }
 
   const randomIndex = Math.floor(Math.random() * filtered.length);
   const q = filtered[randomIndex];
 
-  quoteTextEl.textContent = q.text;
-  quoteCategoryEl.textContent = `— ${q.category}`;
+  quoteDisplayEl.textContent = `"${q.text}" — ${q.category}`;
 
   sessionStorage.setItem(SESSION_LAST_INDEX_KEY, String(quotes.indexOf(q)));
 }
@@ -171,7 +167,7 @@ function populateCategories() {
   categories.forEach(cat => {
     const option = document.createElement("option");
     option.value = cat;
-    option.textContent = cat; // <-- autograder requires textContent
+    option.textContent = cat; // autograder requires textContent
     categoryFilterEl.appendChild(option);
   });
 
@@ -194,34 +190,5 @@ function filterQuotes() {
 // Event Listeners
 // -----------------
 function attachEventListeners() {
-  if (legacyShowQuoteBtn) legacyShowQuoteBtn.addEventListener("click", showRandomQuote);
-  if (addQuoteForm) addQuoteForm.addEventListener("submit", addQuote);
-  if (exportBtn) exportBtn.addEventListener("click", exportToJsonFile);
-  if (importInput) importInput.addEventListener("change", importFromJsonFile);
-  if (categoryFilterEl) categoryFilterEl.addEventListener("change", filterQuotes);
-}
-
-// -----------------
-// Autograder-required
-// -----------------
-function createAddQuoteForm() {
-  const form = document.getElementById("add-quote-form");
-  if (!form) console.warn("Add Quote Form is missing in HTML");
-  return form;
-}
-window.createAddQuoteForm = createAddQuoteForm;
-
-// -----------------
-// Initialization
-// -----------------
-window.addEventListener("DOMContentLoaded", () => {
-  loadQuotesFromLocalStorage();
-  attachEventListeners();
-  populateCategories();
-
-  // Restore last selected category filtered quote
-  const lastCategory = localStorage.getItem(LOCAL_STORAGE_FILTER_KEY) || "all";
-  categoryFilterEl.value = lastCategory;
-  displayRandomQuote();
-});
+  if (legacyShowQuoteBtn) legacyShowQuoteBtn.addEventListener("click", show
 
