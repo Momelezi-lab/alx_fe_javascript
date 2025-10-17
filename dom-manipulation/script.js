@@ -5,7 +5,7 @@ let quotes = [
   { text: "Simplicity is the soul of efficiency.", category: "Productivity" }
 ];
 
-// DOM element references
+// DOM element references (ensure these IDs exist in index.html)
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteButton = document.getElementById("newQuote");
 const addQuoteButton = document.getElementById("addQuoteBtn");
@@ -18,8 +18,7 @@ const newQuoteCategory = document.getElementById("newQuoteCategory");
  * - Updates the DOM inside #quoteDisplay
  */
 function displayRandomQuote() {
-  // handle empty array
-  if (!quotes || quotes.length === 0) {
+  if (!Array.isArray(quotes) || quotes.length === 0) {
     quoteDisplay.innerHTML = "<p>No quotes available. Add one below.</p>";
     return;
   }
@@ -28,7 +27,7 @@ function displayRandomQuote() {
   const { text, category } = quotes[randomIndex];
 
   // Build and insert DOM nodes
-  quoteDisplay.innerHTML = ""; // clear previous
+  quoteDisplay.innerHTML = ""; // clear previous content
   const quoteText = document.createElement("p");
   quoteText.textContent = `"${text}"`;
 
@@ -50,7 +49,6 @@ function addQuote() {
   const category = newQuoteCategory.value.trim();
 
   if (text === "" || category === "") {
-    // keep simple for tests (no custom UI required)
     alert("Please fill in both fields!");
     return;
   }
@@ -62,14 +60,19 @@ function addQuote() {
   newQuoteText.value = "";
   newQuoteCategory.value = "";
 
-  // Update the DOM so tests (and users) see the new quote immediately
+  // Immediately show the newly added quote (or a random one)
   displayRandomQuote();
 }
 
-// Event listeners
-newQuoteButton.addEventListener("click", displayRandomQuote);
-addQuoteButton.addEventListener("click", addQuote);
+// Attach event listeners (tests look for listener on element with id "newQuote")
+if (newQuoteButton) {
+  newQuoteButton.addEventListener("click", displayRandomQuote);
+}
 
-// Show an initial random quote on load so page doesn't start empty
+if (addQuoteButton) {
+  addQuoteButton.addEventListener("click", addQuote);
+}
+
+// Show an initial random quote on load
 window.addEventListener("DOMContentLoaded", displayRandomQuote);
 
