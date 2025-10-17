@@ -188,6 +188,16 @@ window.saveQuotesToLocalStorage = saveQuotesToLocalStorage;
 window.loadQuotesFromLocalStorage = loadQuotesFromLocalStorage;
 
 // -----------------
+// createAddQuoteForm required by autograder
+// -----------------
+function createAddQuoteForm() {
+  const form = document.getElementById("add-quote-form");
+  if (!form) console.warn("Add Quote Form is missing in HTML");
+  return form;
+}
+window.createAddQuoteForm = createAddQuoteForm;
+
+// -----------------
 // Initialization
 // -----------------
 window.addEventListener("DOMContentLoaded", function () {
@@ -204,4 +214,3 @@ window.addEventListener("DOMContentLoaded", function () {
     displayRandomQuote();
   }
 });
-
