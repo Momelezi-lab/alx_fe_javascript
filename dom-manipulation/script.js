@@ -195,31 +195,27 @@ function filterQuotes() {
 // -----------------
 // Server Sync
 // -----------------
+async function fetchQuotesFromServer() {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
+  const data = await res.json();
+  return data.map(item => ({ text: item.title, category: "Server" }));
+}
+
 async function syncQuotes() {
   try {
-    // GET quotes from mock server
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
-    const data = await res.json();
+    const serverQuotes = await fetchQuotesFromServer();
 
-    const serverQuotes = data.map(item => ({
-      text: item.title,
-      category: "Server"
-    }));
-
-    // Merge with local quotes, server takes precedence
-    const combined = [...quotes];
+    // Merge server with local, server takes precedence
     serverQuotes.forEach(sq => {
-      if (!combined.some(q => q.text === sq.text)) combined.push(sq);
+      if (!quotes.some(q => q.text === sq.text)) quotes.push(sq);
     });
 
-    quotes = combined;
     saveQuotesToLocalStorage();
     populateCategories();
     filterQuotes();
 
     showSyncNotification("Quotes synced with server.");
 
-    // POST local quotes to server simulation
     await fetch("https://jsonplaceholder.typicode.com/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -239,7 +235,7 @@ function showSyncNotification(message, isError = false) {
 }
 
 function startPeriodicSync(interval = 30000) {
-  syncQuotes(); // initial sync
+  syncQuotes();
   setInterval(syncQuotes, interval);
 }
 
