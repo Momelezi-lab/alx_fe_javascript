@@ -1,44 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Quote Generator</title>
   <style>
-    body { font-family: system-ui, Arial; padding: 24px; max-width:800px; margin:auto; }
-    #quote-display { border: 1px solid #e0e0e0; padding: 16px; border-radius: 8px; min-height: 68px; }
-    #quote-display p { margin: 0; font-size: 1.15rem; }
-    #quote-display span { display:block; margin-top:6px; color:#555; font-size:.95rem; }
-    .controls { margin-top: 12px; }
-    input { padding:6px; margin-right:6px; }
-    button { padding:6px 10px; }
-    .small { font-size:.85rem; color:#666; display:block; margin-top:8px; }
+    #sync-notification {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #4caf50;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="quote-display" aria-live="polite">
-    <p id="quote-text">Loading...</p>
-    <span id="quote-category"></span>
-  </div>
+  <!-- Quote Display -->
+  <div id="quoteDisplay"></div>
 
-  <div class="controls">
-    <button id="show-quote" type="button">Show New Quote</button>
-  </div>
+  <!-- Show Random Quote Button -->
+  <button id="newQuote">Show New Quote</button>
 
-  <form id="add-quote-form" class="controls" style="margin-top:12px;">
+  <!-- Category Filter -->
+  <label for="categoryFilter">Filter by category:</label>
+  <select id="categoryFilter">
+    <option value="all">All Categories</option>
+    <!-- Categories populated dynamically -->
+  </select>
+
+  <!-- Add New Quote Form -->
+  <form id="add-quote-form">
     <input id="new-quote-text" type="text" placeholder="Enter a new quote" required />
     <input id="new-quote-category" type="text" placeholder="Enter quote category" required />
     <button type="submit">Add Quote</button>
   </form>
 
-  <div id="import-export" class="controls" style="margin-top:12px;">
-    <button id="export-btn" type="button">Export Quotes (JSON)</button>
-    <input id="import-input" type="file" accept=".json" />
-    <span class="small">Import expects an array of objects with <code>text</code> and <code>category</code> properties.</span>
-  </div>
+  <!-- Import / Export -->
+  <button id="export-btn">Export Quotes</button>
+  <input type="file" id="import-input" accept=".json" />
 
+  <!-- Sync Notification -->
+  <div id="sync-notification"></div>
+
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
