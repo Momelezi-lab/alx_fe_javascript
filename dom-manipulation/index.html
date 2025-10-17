@@ -4,14 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dynamic Quote Generator</title>
+  <style>
+    /* small styling to make display clearer for tests/human review */
+    body { font-family: system-ui, Arial; padding: 24px; }
+    #quoteDisplay p { font-size: 1.25rem; margin: 0 0 4px 0; }
+    #quoteDisplay span { color: #555; font-size: .95rem; }
+    .controls { margin-top: 16px; }
+    input { margin-right: 8px; padding: 6px; }
+  </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="quoteDisplay"></div>
-  <button id="newQuote">Show New Quote</button>
+  <div id="quoteDisplay" aria-live="polite"></div>
+  <div class="controls">
+    <button id="newQuote">Show New Quote</button>
+  </div>
 
-  <div>
+  <div style="margin-top:12px;">
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteBtn">Add Quote</button>
