@@ -28,6 +28,7 @@ const newQuoteCategoryEl = document.getElementById("new-quote-category");
 const exportBtn = document.getElementById("export-btn");
 const importInput = document.getElementById("import-input");
 const categoryFilterEl = document.getElementById("categoryFilter");
+const syncNotificationEl = document.getElementById("sync-notification");
 
 // ----------------
 // Storage Utilities
@@ -103,8 +104,8 @@ function addQuote(event) {
   newQuoteTextEl.value = "";
   newQuoteCategoryEl.value = "";
 
-  populateCategories(); // Update dropdown if new category added
-  filterQuotes();       // Show filtered quote
+  populateCategories();
+  filterQuotes();
 }
 
 // -----------------
@@ -161,11 +162,10 @@ function populateCategories() {
   categories.forEach(cat => {
     const option = document.createElement("option");
     option.value = cat;
-    option.textContent = cat; // Changed from innerHTML to textContent
+    option.textContent = cat;
     categoryFilterEl.appendChild(option);
   });
 
-  // Restore last selected category
   const last = localStorage.getItem(LOCAL_STORAGE_FILTER_KEY) || "all";
   categoryFilterEl.value = last;
 }
@@ -221,7 +221,7 @@ window.createAddQuoteForm = createAddQuoteForm;
 async function fetchQuotesFromServer() {
   try {
     const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
-    if (!res.ok) throw new Error("Failed to fetch from server");
+    if (!res.ok) throw new Error("Failed to fetch server data");
     const data = await res.json();
     return data.map(d => ({ text: d.title, category: "Server" }));
   } catch (err) {
@@ -230,10 +230,21 @@ async function fetchQuotesFromServer() {
   }
 }
 
+async function postQuotesToServer(newQuotes) {
+  try {
+    await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newQuotes)
+    });
+  } catch (err) {
+    console.warn("Failed to post quotes:", err);
+  }
+}
+
 async function syncQuotes() {
   const serverQuotes = await fetchQuotesFromServer();
 
-  // Conflict resolution: server data takes precedence
   serverQuotes.forEach(sq => {
     if (!quotes.some(lq => lq.text === sq.text && lq.category === sq.category)) {
       quotes.push(sq);
@@ -243,7 +254,13 @@ async function syncQuotes() {
   saveQuotesToLocalStorage();
   populateCategories();
   filterQuotes();
-  console.log("Quotes synced with server!");
+
+  if (syncNotificationEl) {
+    syncNotificationEl.textContent = "Quotes synced with server!";
+    setTimeout(() => { syncNotificationEl.textContent = ""; }, 3000);
+  }
+
+  await postQuotesToServer(quotes);
 }
 
 // Periodically sync every 60s
@@ -261,7 +278,6 @@ window.addEventListener("DOMContentLoaded", () => {
   categoryFilterEl.value = lastCategory;
   filterQuotes();
 
-  // Initial server sync
   syncQuotes();
 });
 

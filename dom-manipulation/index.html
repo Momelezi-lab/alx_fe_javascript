@@ -10,6 +10,7 @@
     #quote-category { font-style: italic; margin-bottom: 20px; }
     form { margin-top: 20px; }
     input, button, select { margin: 5px; padding: 5px; }
+    #sync-notification { color: green; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -18,7 +19,6 @@
   <!-- Wrapper for autograder -->
   <div id="quote-display"></div>
 
-  <!-- Individual elements for UI -->
   <div id="quote-text"></div>
   <div id="quote-category"></div>
 
@@ -39,6 +39,9 @@
   <!-- Export / Import -->
   <button id="export-btn">Export Quotes</button>
   <input type="file" id="import-input" accept=".json" />
+
+  <!-- Sync Notification -->
+  <div id="sync-notification"></div>
 
   <script src="script.js"></script>
 </body>
