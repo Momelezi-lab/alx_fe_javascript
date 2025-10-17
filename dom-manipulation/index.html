@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dynamic Quote Generator</title>
   <style>
     body { font-family: system-ui, Arial; padding: 24px; max-width:800px; margin:auto; }
-    #quoteDisplay p { font-size: 1.25rem; margin: 0 0 4px 0; }
-    #quoteDisplay span { color: #555; font-size: .95rem; }
-    .controls { margin-top: 16px; }
-    input { margin-right: 8px; padding: 6px; }
-    .small { font-size: .9rem; color:#444; margin-top:8px; display:block; }
+    #quote-display { border: 1px solid #e0e0e0; padding: 16px; border-radius: 8px; min-height: 68px; }
+    #quote-display p { margin: 0; font-size: 1.15rem; }
+    #quote-display span { display:block; margin-top:6px; color:#555; font-size:.95rem; }
+    .controls { margin-top: 12px; }
+    input { padding:6px; margin-right:6px; }
+    button { padding:6px 10px; }
+    .small { font-size:.85rem; color:#666; display:block; margin-top:8px; }
   </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="quoteDisplay" aria-live="polite"></div>
-
-  <div class="controls">
-    <button id="newQuote">Show New Quote</button>
+  <div id="quote-display" aria-live="polite">
+    <p id="quote-text">Loading...</p>
+    <span id="quote-category"></span>
   </div>
 
-  <div id="formContainer" style="margin-top:12px;">
-    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button id="addQuoteBtn">Add Quote</button>
+  <div class="controls">
+    <button id="show-quote" type="button">Show New Quote</button>
+  </div>
 
-    <!-- Import / Export UI -->
-    <div style="margin-top:10px;">
-      <button id="exportBtn" type="button">Export Quotes (JSON)</button>
-      <input type="file" id="importFile" accept=".json" />
-      <span class="small">Tip: Import expects an array of objects with "text" and "category" properties.</span>
-    </div>
+  <form id="add-quote-form" class="controls" style="margin-top:12px;">
+    <input id="new-quote-text" type="text" placeholder="Enter a new quote" required />
+    <input id="new-quote-category" type="text" placeholder="Enter quote category" required />
+    <button type="submit">Add Quote</button>
+  </form>
+
+  <div id="import-export" class="controls" style="margin-top:12px;">
+    <button id="export-btn" type="button">Export Quotes (JSON)</button>
+    <input id="import-input" type="file" accept=".json" />
+    <span class="small">Import expects an array of objects with <code>text</code> and <code>category</code> properties.</span>
   </div>
 
   <script src="script.js"></script>
