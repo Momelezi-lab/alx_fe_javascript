@@ -102,8 +102,8 @@ function addQuote(event) {
   newQuoteTextEl.value = "";
   newQuoteCategoryEl.value = "";
 
-  populateCategories(); // Update dropdown if new category added
-  filterQuotes();       // Show filtered quote
+  populateCategories();
+  filterQuotes();
 }
 
 // -----------------
@@ -156,7 +156,6 @@ function populateCategories() {
 
   const categories = [...new Set(quotes.map(q => q.category))].sort();
 
-  // Keep All Categories first
   categoryFilterEl.innerHTML = '<option value="all">All Categories</option>';
 
   categories.forEach(cat => {
@@ -166,7 +165,6 @@ function populateCategories() {
     categoryFilterEl.appendChild(option);
   });
 
-  // Restore last selected category
   const last = localStorage.getItem(LOCAL_STORAGE_FILTER_KEY) || "all";
   categoryFilterEl.value = last;
 }
@@ -191,14 +189,13 @@ function filterQuotes() {
   quoteTextEl.textContent = q.text;
   quoteCategoryEl.textContent = `— ${q.category}`;
 
-  // Update session storage
   sessionStorage.setItem(SESSION_LAST_INDEX_KEY, String(quotes.indexOf(q)));
 }
 
 // -----------------
-// Server Sync Simulation
+// Server Sync
 // -----------------
-async function fetchQuotesFromServer() {
+async function syncQuotes() {
   try {
     // GET quotes from mock server
     const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
@@ -209,7 +206,7 @@ async function fetchQuotesFromServer() {
       category: "Server"
     }));
 
-    // Merge server quotes (server takes precedence if not already present)
+    // Merge with local quotes, server takes precedence
     const combined = [...quotes];
     serverQuotes.forEach(sq => {
       if (!combined.some(q => q.text === sq.text)) combined.push(sq);
@@ -222,7 +219,7 @@ async function fetchQuotesFromServer() {
 
     showSyncNotification("Quotes synced with server.");
 
-    // POST local quotes back to server simulation
+    // POST local quotes to server simulation
     await fetch("https://jsonplaceholder.typicode.com/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -241,9 +238,9 @@ function showSyncNotification(message, isError = false) {
   setTimeout(() => { syncNotificationEl.textContent = ""; }, 3000);
 }
 
-function startServerSync(interval = 30000) {
-  fetchQuotesFromServer(); // initial sync
-  setInterval(fetchQuotesFromServer, interval);
+function startPeriodicSync(interval = 30000) {
+  syncQuotes(); // initial sync
+  setInterval(syncQuotes, interval);
 }
 
 // -----------------
@@ -275,12 +272,10 @@ window.addEventListener("DOMContentLoaded", () => {
   attachEventListeners();
   populateCategories();
 
-  // Restore last selected category filtered quote
   const lastCategory = localStorage.getItem(LOCAL_STORAGE_FILTER_KEY) || "all";
   categoryFilterEl.value = lastCategory;
   filterQuotes();
 
-  // Start periodic server sync
-  startServerSync();
+  startPeriodicSync();
 });
 
